@@ -1,0 +1,25 @@
+services:
+  - type: web
+    name: product-categorization-system
+    env: node
+    plan: starter
+    buildCommand: npm install && npm run build && npx prisma generate && npx prisma migrate deploy
+    startCommand: npm start
+    envVars:
+      - key: DATABASE_URL
+        fromDatabase:
+          name: product-categorization-db
+          property: connectionString
+      - key: NEXTAUTH_SECRET
+        generateValue: true
+      - key: NEXTAUTH_URL
+        fromService:
+          type: web
+          name: product-categorization-system
+          envVarKey: RENDER_EXTERNAL_URL
+
+databases:
+  - name: product-categorization-db
+    databaseName: product_categorization
+    user: product_categorization_user
+
